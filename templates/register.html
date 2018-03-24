@@ -23,7 +23,9 @@
 				<a href="#">登录</a>
 			</div>
 			<div class="reg_form clearfix">
-				<form>
+                <div style="color: red">{{ message }}</div>
+				<form method="post" action="/users/register">
+                {% csrf_token %}
 				<ul>
 					<li>
 						<label>用户名:</label>
