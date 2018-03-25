@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tinymce',   # 使用应用
+    'tinymce',  # 使用应用
     'apps.cart',
     'apps.goods',
     'apps.users',
@@ -125,3 +125,15 @@ SESSION_REDIS_PORT = 6379
 SESSION_REDIS_DB = 2
 SESSION_REDIS_PASSWORD = ''
 SESSION_REDIS_PREFIX = 'session'
+
+# 邮件发送配置
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # 导入邮件模块
+# EMAIL_HOST = 'smtp.exmail.qq.com'  # 发邮件主机
+# EMAIL_PORT = 465  # 发邮件端口
+# EMAIL_HOST_USER = '542686015@qq.com'  # 发件人邮件
+# EMAIL_HOST_PASSWORD = 'kgsgxgezgjbvbcgb'  # 邮箱授权时获得授权码，非注册登录密码
+EMAIL_HOST = 'smtp.163.com'  # 发邮件主机
+EMAIL_PORT = 25  # 发邮件端口
+EMAIL_HOST_USER = 'dailyfresh_shop@163.com'  # 发件人邮件
+EMAIL_HOST_PASSWORD = 'h25254818j'  # 邮箱授权时获得授权码，非注册登录密码
+EMAIL_FROM = '天天生鲜<dailyfresh_shop@163.com>'  # 邮件中的显示的发件人, 邮箱需要与发件人邮箱一致

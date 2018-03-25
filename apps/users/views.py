@@ -5,13 +5,17 @@ from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
+from itsdangerous import TimedJSONWebSignatureSerializer, SignatureExpired
 
+from DailyFresh import settings
 from apps.users.models import User
 
 from django.views.generic import View
 
-
 # Create your views here.
+from utils.common import send_active_email
+
+
 class LoginView(View):
     def get(self, request):
         """进入登录界面"""
@@ -43,13 +47,23 @@ class LoginView(View):
         # 通过django的login方法，保存登录用户状态（使用session）
         login(request, user)
 
+        # 获取是否勾选'记住用户名'
+        remember = request.POST.get('remember')
+
+        # 判断是否是否勾选'记住用户名'
+        if remember != 'on':
+            # 没有勾选，不需要记住cookie信息，浏览会话结束后过期
+            request.session.set_expiry(0)
+        else:
+            # 已勾选，需要记住cookie信息，两周后过期
+            request.session.set_expiry(3600)
+
         # 响应请求，返回html界面 (进入首页)
         return redirect(reverse('goods:index'))
 
 
 class LogoutView(View):
-    def get(self,request):
-
+    def get(self, request):
         logout(request)
 
         return redirect(reverse('goods:index'))
@@ -83,14 +97,40 @@ class RegisterView(View):
         # 保存用户到数据库中
         # create_user: 是django提供的方法, 会对密码进行加密后再保存到数据库
         try:
-            User.objects.create_user(username=username,
-                                     password=password,
-                                     email=email)
+            user = User.objects.create_user(username=username,
+                                            password=password,
+                                            email=email)
+
+            # 将用户激活状态设置为未激活
+            User.objects.filter(id=user.id).update(is_active=False)
+
         except IntegrityError:
             return render(request, 'register.html', {'message': '用户名已存在'})
 
-        # todo: 发送激活邮件
+        # 发送激活邮件
+        token = user.generate_active_token()
+        send_active_email(username, email, token)
+
         return redirect(reverse("users:login"))
+
+
+class ActiveView(View):
+    # 用户激活逻辑
+    def get(self, request, token):
+        try:
+            # 要激活的用户id
+            s = TimedJSONWebSignatureSerializer(settings.SECRET_KEY, 3600)
+            info = s.loads(token)
+            user_id = info['confirm']
+        except SignatureExpired:
+            return HttpResponse('激活链接已过期')
+
+            # 修改用户的激活状态为True (is_active=True)
+        User.objects.filter(id=user_id).update(is_active=True)
+
+        # 激活成功进入登录界面
+        return HttpResponse('激活成功,进入登录界面')
+
 
 
 # 以下是原版：
