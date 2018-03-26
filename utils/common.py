@@ -1,8 +1,12 @@
+from celery import Celery
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from DailyFresh import settings
 
+# 创建celery应用对象
+app = Celery('celery_tasks.common', broker='redis://127.0.0.1:6379/1')
 
+@app.task
 def send_active_email(username, receiver, token):
     """封装发送邮件方法"""
 

@@ -115,7 +115,7 @@ class RegisterView(View):
 
         # 发送激活邮件
         token = user.generate_active_token()
-        send_active_email(username, email, token)
+        send_active_email.delay(username, email, token)
 
         return redirect(reverse("users:login"))
 

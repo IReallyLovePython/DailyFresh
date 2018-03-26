@@ -1,0 +1,14 @@
+1、运行前复制一份代码到桌面（或是另一个电脑，作为celery服务器）
+
+2、在桌面的项目中的util.common里面添加以下代码：
+             # 添加到celery服务器所在电脑的项目中,
+             # 让celery执行发送邮件前初始化django环境
+             import os
+             import django
+             # 设置环境变量
+             os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dailyfresh.settings")
+             # 初始化django环境
+             django.setup()
+
+3、在桌面的项目里打开终端，执行以下命令：
+                celery -A utils.common worker -l info
