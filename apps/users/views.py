@@ -8,12 +8,12 @@ from django.shortcuts import render, redirect
 from itsdangerous import TimedJSONWebSignatureSerializer, SignatureExpired
 
 from DailyFresh import settings
-from apps.users.models import User
+from apps.users.models import User, Address
 
 from django.views.generic import View
 
 # Create your views here.
-from utils.common import send_active_email
+from utils.common import send_active_email, LoginRequiredMixin
 
 
 class LoginView(View):
@@ -59,7 +59,13 @@ class LoginView(View):
             request.session.set_expiry(3600)
 
         # 响应请求，返回html界面 (进入首页)
-        return redirect(reverse('goods:index'))
+        next = request.GET.get('next', None)
+        if next is None:
+            # 如果是直接登陆成功，就重定向到首页
+            return redirect(reverse('goods:index'))
+        else:
+            # 如果是用户中心重定向到登陆页面，就回到用户中心
+            return redirect(next)
 
 
 class LogoutView(View):
@@ -132,14 +138,63 @@ class ActiveView(View):
         return HttpResponse('激活成功,进入登录界面')
 
 
+class InfoView(LoginRequiredMixin, View):
+    def get(self, request):
 
-# 以下是原版：
-# 显示注册页面
-# def register(request):
-#     return render(request, 'register.html')
-# 处理注册逻辑
-# def do_register(request):
-#     pass
-# 显示登陆页面
-# def login(request):
-#     return render(request,'login.html')
+        user = request.user
+        try:
+            address = user.address_set.latest('create_time')
+        except Exception:
+            address = None
+
+        data = {
+            'address': address
+        }
+        return render(request, 'user_center_info.html', data)
+
+
+class AddressView(LoginRequiredMixin, View):
+    def get(self, request):
+        """显示用户地址"""
+
+        # user = request.user
+        try:
+            # 查询用户地址：根据创建时间排序，最近的时间在最前，取第1个地址
+            address = Address.objects.filter(user=request.user) \
+                .order_by('-create_time')[0]
+            # address = user.address_set.latest('create_time')
+        except Exception:
+            address = None
+
+        data = {
+            'address': address
+        }
+
+        return render(request, 'user_center_site.html', data)
+
+    def post(self, request):
+        receiver = request.POST.get('receiver')
+        address = request.POST.get('address')
+        zip_code = request.POST.get('zip_code')
+        mobile = request.POST.get('mobile')
+
+        user = request.user  # 当前登录用户
+
+        if not all([receiver, address, zip_code, mobile]):
+            return render(request, 'user_center_site.html', {'message': '参数不完整'})
+
+        Address.objects.create(
+            receiver_name=receiver,
+            receiver_mobile=mobile,
+            detail_addr=address,
+            zip_code=zip_code,
+            user=user
+        )
+
+        # 响应请求，刷新当前界面(/users/address)
+        return redirect(reverse('users:address'))
+
+
+class OrderView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, 'user_center_order.html')

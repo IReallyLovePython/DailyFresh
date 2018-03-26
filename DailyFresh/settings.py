@@ -137,3 +137,7 @@ EMAIL_PORT = 25  # 发邮件端口
 EMAIL_HOST_USER = 'dailyfresh_shop@163.com'  # 发件人邮件
 EMAIL_HOST_PASSWORD = 'h25254818j'  # 邮箱授权时获得授权码，非注册登录密码
 EMAIL_FROM = '天天生鲜<dailyfresh_shop@163.com>'  # 邮件中的显示的发件人, 邮箱需要与发件人邮箱一致
+
+# 配合@login_required使用,
+# 如果没有登录默认跳转到此url指定的界面
+LOGIN_URL = '/users/login'

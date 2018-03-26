@@ -12,4 +12,8 @@ urlpatterns = [
     url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
     url(r'^active/(.+)$', views.ActiveView.as_view(), name='active'),
 
+    url(r'^address/$', views.AddressView.as_view(), name='address'),
+    url(r'^order/$', views.OrderView.as_view(), name='order'),
+    url(r'^$', views.InfoView.as_view(), name='info'),
+
 ]
