@@ -118,6 +118,18 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 AUTH_USER_MODEL = 'users.User'
 
+# 缓存
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://192.168.243.193:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": ""  # Redis密码，默认为空
+        }
+    }
+}
+
 # 使用redis保存session数据
 SESSION_ENGINE = 'redis_sessions.session'
 SESSION_REDIS_HOST = 'localhost'
@@ -141,3 +153,7 @@ EMAIL_FROM = '天天生鲜<dailyfresh_shop@163.com>'  # 邮件中的显示的发
 # 配合@login_required使用,
 # 如果没有登录默认跳转到此url指定的界面
 LOGIN_URL = '/users/login'
+
+# 配置Django自定义的存储系统
+DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.FdfsStorage'
+

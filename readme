@@ -12,3 +12,7 @@
 
 3、在桌面的项目里打开终端，执行以下命令：
                 celery -A utils.common worker -l info
+
+
+1、修改DailyFresh/utils/fastdfs/client.conf
+                tracker_server=自己的ip:22122
