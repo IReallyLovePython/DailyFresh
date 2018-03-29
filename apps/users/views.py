@@ -5,15 +5,18 @@ from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
+from django_redis import get_redis_connection
 from itsdangerous import TimedJSONWebSignatureSerializer, SignatureExpired
 
 from DailyFresh import settings
+from apps.goods.models import GoodsSKU
 from apps.users.models import User, Address
 
 from django.views.generic import View
 
 # Create your views here.
-from utils.common import send_active_email, LoginRequiredMixin
+from utils.common import LoginRequiredMixin
+from celery_tasks.tasks import send_active_email
 
 
 class LoginView(View):
@@ -146,10 +149,32 @@ class InfoView(LoginRequiredMixin, View):
             address = user.address_set.latest('create_time')
         except Exception:
             address = None
+            # 从Redis数据库中查询出用户浏览过的商品记录
+            # 格式: history_用户id : [商品id1 商品id2 ...]
+            # 例:   history_1: [3, 1, 2]
+        strict_redis = get_redis_connection('default')
+        key = 'history_%s' % request.user.id
+        # 最多只查看最近浏览过的5条记录
+        goods_ids = strict_redis.lrange(key, 0, 4)
+        # 获取到的商品id: [3, 1, 2]
+        print(goods_ids)
 
+        # 问题：从数据库中根据商品id, 查询出商品信息skus，查询出来后顺序变了，不在上Redis中保存的顺序，变成了： [1, 2, 3]
+        skus = []  # 保存用户历史浏览记录，保存的商品的顺序与redis中查询的商品id顺序一致
+        for id in goods_ids:
+            try:
+                sku = GoodsSKU.objects.get(id=id)
+                # 添加一个商品到列表中,以便它能保持原有的顺序
+                skus.append(sku)
+            except GoodsSKU.DoesNotExist:
+                pass
+
+        # 定义模板数据
         data = {
-            'address': address
+            'address': address,
+            'skus': skus,
         }
+
         return render(request, 'user_center_info.html', data)
 
 
@@ -198,3 +223,10 @@ class AddressView(LoginRequiredMixin, View):
 class OrderView(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, 'user_center_order.html')
+
+
+class PswResetView(View):
+    """处理忘记密码的逻辑"""
+
+    def get(self, request):
+        return render(request, 'psw_reset.html')

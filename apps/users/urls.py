@@ -9,6 +9,7 @@ urlpatterns = [
 
     url(r'^register/$', views.RegisterView.as_view(), name='register'),
     url(r'^login/$', views.LoginView.as_view(), name='login'),
+    url(r'^login/psw_reset$', views.PswResetView.as_view(), name='psw_reset'),
     url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
     url(r'^active/(.+)$', views.ActiveView.as_view(), name='active'),
 

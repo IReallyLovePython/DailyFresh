@@ -122,7 +122,7 @@ AUTH_USER_MODEL = 'users.User'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.243.193:6379/2",
+        "LOCATION": "redis://127.0.0.1:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "PASSWORD": ""  # Redis密码，默认为空
@@ -138,12 +138,16 @@ SESSION_REDIS_DB = 2
 SESSION_REDIS_PASSWORD = ''
 SESSION_REDIS_PREFIX = 'session'
 
+
 # 邮件发送配置
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # 导入邮件模块
-# EMAIL_HOST = 'smtp.exmail.qq.com'  # 发邮件主机
+
+# EMAIL_HOST = 'smtp.qq.com'  # 发邮件主机
 # EMAIL_PORT = 465  # 发邮件端口
 # EMAIL_HOST_USER = '542686015@qq.com'  # 发件人邮件
 # EMAIL_HOST_PASSWORD = 'kgsgxgezgjbvbcgb'  # 邮箱授权时获得授权码，非注册登录密码
+# EMAIL_FROM = '天天生鲜<542686015@qq.com>'  # 邮件中的显示的发件人, 邮箱需要与发件人邮箱一致
+
 EMAIL_HOST = 'smtp.163.com'  # 发邮件主机
 EMAIL_PORT = 25  # 发邮件端口
 EMAIL_HOST_USER = 'dailyfresh_shop@163.com'  # 发件人邮件
