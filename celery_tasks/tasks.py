@@ -6,7 +6,7 @@
 # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DailyFresh.settings")
 # # 初始化django环境
 # django.setup()
-
+import time
 from celery import Celery
 from django.core.mail import send_mail
 from django.template import loader
@@ -16,6 +16,7 @@ from DailyFresh import settings
 # 创建celery应用对象
 from apps.goods.models import GoodsCategory, IndexSlideGoods, IndexPromotion, IndexCategoryGoods
 
+
 app = Celery('celery_tasks.tasks', broker='redis://127.0.0.1:6379/1')
 
 
@@ -23,6 +24,8 @@ app = Celery('celery_tasks.tasks', broker='redis://127.0.0.1:6379/1')
 @app.task
 def generate_static_index_html():
     """显示首页"""
+    # 防止因celery执行太快，比后台保存还快，导致版本落后
+    time.sleep(0.5)
 
     # 查询商品类别数据
     categories = GoodsCategory.objects.all()

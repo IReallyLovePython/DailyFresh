@@ -11,7 +11,7 @@
              django.setup()
 
 3、在桌面的项目里打开终端，执行以下命令：
-                celery -A utils.common worker -l info
+                celery -A celery_tasks.tasks worker -l info
 
 
 1、修改DailyFresh/utils/fastdfs/client.conf
