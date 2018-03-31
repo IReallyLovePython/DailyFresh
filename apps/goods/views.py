@@ -158,8 +158,8 @@ class ListView(View):
         # 分页：需要知道从第几页展示
         page_num = int(page_num)
 
-        # 创建分页器：每页两条记录
-        paginator = Paginator(skus, 5)
+        # 创建分页器：每页三条记录,少于等于1条合并到上一页
+        paginator = Paginator(skus, 3,1)
 
         # 校验page_num：只有知道分页对对象，才能知道page_num是否正确
         try:

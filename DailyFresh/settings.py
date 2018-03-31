@@ -38,12 +38,28 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 使用haystack全文检索框架
+    'haystack',
     'tinymce',  # 使用应用
     'apps.cart',
     'apps.goods',
     'apps.users',
     'apps.orders',
 )
+
+# 配置haystack框架
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        # 使用whoosh搜索引擎
+        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+        # 指定生成的索引库保存在哪个目录下
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}
+
+# 当添加、修改、删除了数据时，自动生成索引
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 2
 
 TINYMCE_DEFAULT_CONFIG = {
     'theme': 'advanced',  # 丰富样式
@@ -138,7 +154,6 @@ SESSION_REDIS_DB = 2
 SESSION_REDIS_PASSWORD = ''
 SESSION_REDIS_PREFIX = 'session'
 
-
 # 邮件发送配置
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # 导入邮件模块
 
@@ -160,4 +175,3 @@ LOGIN_URL = '/users/login'
 
 # 配置Django自定义的存储系统
 DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.FdfsStorage'
-

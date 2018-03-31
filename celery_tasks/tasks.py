@@ -62,7 +62,7 @@ def generate_static_index_html():
     html_str = template.render(context)
 
     # 生成一个叫index.html的文件: 放在桌面的static目录下
-    file_path = '/home/python/Desktop/static/index.html'
+    file_path = '/home/python/Desktop/static/search.html'
     with open(file_path, 'w') as file:
         # 写入html内容
         file.write(html_str)

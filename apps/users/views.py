@@ -225,8 +225,22 @@ class OrderView(LoginRequiredMixin, View):
         return render(request, 'user_center_order.html')
 
 
-class PswResetView(View):
+class PswForgetView(View):
     """处理忘记密码的逻辑"""
 
     def get(self, request):
-        return render(request, 'psw_reset.html')
+        return render(request, 'psw_forget.html')
+
+
+class PswResetView(View):
+    def get(self,request):
+        return render(request,'psw_reset.html')
+
+
+class PswSendmailView(View):
+    def get(self,request):
+        user_name = request.GET.get('user_name')
+        data={
+            'user_name':user_name
+        }
+        return render(request,'psw_sendmail.html',data)

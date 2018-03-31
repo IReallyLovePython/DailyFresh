@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load staticfiles %}
     <meta charset="UTF-8">
-    <title>天天生鲜-安全中心</title>
+    <title>天天生鲜-密码找回</title>
 </head>
 <body>
 {#    todo:找回密码#}
-    <h3>密码找回</h3>
-    <h3>更改密码</h3>
+<form method="get" action="">
+    {#        {% csrf_token %}#}
+    <input type="text" name="user_name" >
+    <input type="submit">
+</form>
 </body>
 </html>
