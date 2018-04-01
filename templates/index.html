@@ -38,7 +38,7 @@
                 <span>|</span>
                 <a href="{% url 'users:info' %}">用户中心</a>
                 <span>|</span>
-                <a href="cart.html">我的购物车</a>
+                <a href="{% url 'cart:cart' %}">我的购物车</a>
                 <span>|</span>
                 <a href="{% url 'users:order' %}">我的订单</a>
             </div>
@@ -55,7 +55,7 @@
         </form>
     </div>
     <div class="guest_cart fr">
-        <a href="#" class="cart_name fl">我的购物车</a>
+        <a href="{% url 'cart:cart' %}" class="cart_name fl">我的购物车</a>
         <div class="goods_count fl" id="show_count">{{ cart_count }}</div>
     </div>
 </div>
@@ -82,11 +82,11 @@
     </ul>
     <div class="slide fl">
         <ul class="slide_pics">
-            {% for sku in slide_skus %}
-                <li>
-                    <a href="{% url 'goods:detail' sku.id %}"><img src="{{ sku.image.url }}" alt="幻灯片"></a>
-                </li>
-            {% endfor %}
+                {% for sku in slide_skus %}
+                    <li>
+                        <a href="{% url 'goods:list' sku.index|add:1 1 %}"><img src="{{ sku.image.url }}" alt="幻灯片"></a>
+                    </li>
+                {% endfor %}
         </ul>
         <div class="prev"></div>
         <div class="next"></div>

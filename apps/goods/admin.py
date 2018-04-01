@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.core.cache import cache
 
 from apps.goods.models import *
-from celery_tasks.tasks import generate_static_index_html
+# from celery_tasks.tasks import generate_static_index_html
+from celery_tasks.tasks import *
 
 
 class BaseAdmin(admin.ModelAdmin):

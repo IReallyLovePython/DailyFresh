@@ -25,11 +25,11 @@
 
             <div class="user_link fl">
                 <span>|</span>
-                <a href="/user">用户中心</a>
+                <a href="{% url 'users:info' %}">用户中心</a>
                 <span>|</span>
-                <a href="/cart/">我的购物车</a>
+                <a href="{% url 'cart:cart' %}">我的购物车</a>
                 <span>|</span>
-                <a href="/user/order/1">我的订单</a>
+                <a href="{% url 'users:order' 1 %}">我的订单</a>
             </div>
         </div>
     </div>
