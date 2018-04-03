@@ -6,8 +6,14 @@
     <title>天天生鲜-安全中心</title>
 </head>
 <body>
-    {#    todo:找回密码#}
-    <a href="{% url 'users:psw_reset'%}">密码找回</a>
+{#    todo:找回密码#}
+    <div>用户名：</div>
+    <form  method="post" action="{% url 'users:psw_reset' %}">
+{#        {% csrf_token %}#}
+        <input type="text" name="user_name" value="1">
+        <input type="submit" value="密码找回">
+    </form>
+
     <a href="#">更改密码</a>
 </body>
 </html>

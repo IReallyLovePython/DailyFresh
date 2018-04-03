@@ -232,15 +232,28 @@ class PswForgetView(View):
         return render(request, 'psw_forget.html')
 
 
-class PswResetView(View):
-    def get(self,request):
-        return render(request,'psw_reset.html')
+    # def post(self,request):
+    #     user_name = request.GET.get('user_name')
+    #     print(user_name)
+    #     data = {
+    #         'user_name': user_name
+    #     }
+    #     # return render(request, 'psw_reset.html',data)
+    #     return HttpResponse(data)
 
+
+class PswResetView(View):
+    def post(self,request):
+        user_name = request.POST.get('user_name')
+        print(user_name)
+        data = {
+            'user_name': user_name
+        }
+        # return render(request, 'psw_reset.html',data)
+        return HttpResponse(user_name)
+        # return render(request,'psw_reset.html',data)
+#
 
 class PswSendmailView(View):
     def get(self,request):
-        user_name = request.GET.get('user_name')
-        data={
-            'user_name':user_name
-        }
-        return render(request,'psw_sendmail.html',data)
+        return render(request,'psw_sendmail.html')
