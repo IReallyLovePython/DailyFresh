@@ -7,13 +7,18 @@
 </head>
 <body>
 {#    todo:找回密码#}
-    <div>用户名：</div>
-    <form  method="post" action="{% url 'users:psw_reset' %}">
-{#        {% csrf_token %}#}
-        <input type="text" name="user_name" value="1">
+    <form  method="post" action="{% url 'users:psw_sendmail' %}">
+        {% csrf_token %}
+        <div>用户名：</div>
+        <input type="text" name="user_name">
+        <br>
+        <br>
+        <br>
         <input type="submit" value="密码找回">
+        <input type="submit" value="更改密码"
+               onclick="this.form.method='get';
+               this.form.action='{% url 'goods:index' %}'">
     </form>
 
-    <a href="#">更改密码</a>
 </body>
 </html>

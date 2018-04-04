@@ -14,11 +14,11 @@ from apps.users.models import User, Address
 
 from django.views.generic import View
 
-# Create your views here.
 from utils.common import LoginRequiredMixin
-from celery_tasks.tasks import send_active_email
+from celery_tasks.tasks import send_active_email, send_reset_email
 
 
+# Create your views here.
 class LoginView(View):
     def get(self, request):
         """进入登录界面"""
@@ -232,28 +232,55 @@ class PswForgetView(View):
         return render(request, 'psw_forget.html')
 
 
-    # def post(self,request):
-    #     user_name = request.GET.get('user_name')
-    #     print(user_name)
-    #     data = {
-    #         'user_name': user_name
-    #     }
-    #     # return render(request, 'psw_reset.html',data)
-    #     return HttpResponse(data)
+class PswSendMailView(View):  # 逻辑处理，无页面
+    """用户名确认，发送邮件"""
 
-
-class PswResetView(View):
-    def post(self,request):
+    def post(self, request):
         user_name = request.POST.get('user_name')
-        print(user_name)
+
+        user_list = User.objects.all()
+
+        for usr in user_list:
+            if usr.username == user_name:  # 存在此用户名
+                # 发送邮件 邮箱验证
+
+                token = usr.generate_active_token()
+                send_reset_email.delay(usr.username, usr.email, token)
+
+                return HttpResponse('已发送邮件至注册邮箱，请前往邮箱查看！')
+
+        return HttpResponse('请输入正确的用户名!')
+
+
+class SetPswView(View):
+    """密码重新设置"""
+
+    def get(self, request, token):
+        try:
+            # 要激活的用户id
+            s = TimedJSONWebSignatureSerializer(settings.SECRET_KEY, 3600)
+            info = s.loads(token)
+            user_id = info['confirm']
+        except SignatureExpired:
+            return HttpResponse('链接已过期')
+
+        user = User.objects.get(id=user_id)
+        user_name = user.username
         data = {
             'user_name': user_name
         }
-        # return render(request, 'psw_reset.html',data)
-        return HttpResponse(user_name)
-        # return render(request,'psw_reset.html',data)
-#
+        # 返回设置密码页面
+        return render(request, 'setpassword.html', data)
 
-class PswSendmailView(View):
-    def get(self,request):
-        return render(request,'psw_sendmail.html')
+
+class PswComfirmView(View):
+    def post(self, request):
+        user_name = request.POST.get('user_name')
+        user_password = request.POST.get('new_psw')
+
+        user = User.objects.get(username=user_name)
+        user.set_password(user_password)
+        user.save()
+
+        return HttpResponse('密码设置成功！')
+        # return HttpResponse(user_password)

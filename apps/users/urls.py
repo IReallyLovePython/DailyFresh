@@ -14,8 +14,9 @@ urlpatterns = [
     url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
 
     url(r'^login/psw_forget/$', views.PswForgetView.as_view(), name='psw_forget'),
-    url(r'^login/psw_reset/$', views.PswResetView.as_view(), name='psw_reset'),
-    url(r'^login/psw_sendmail/(<?P user_name>.+)', views.PswSendmailView.as_view(), name='psw_sendmail'),
+    url(r'^login/psw_sendmail/$', views.PswSendMailView.as_view(), name='psw_sendmail'),
+    url(r'^setpsw/(.+)$', views.SetPswView.as_view(), name='setpsw'),
+    url(r'^psw_comfirm/', views.PswComfirmView.as_view(), name='psw_comfirm'),
 
     url(r'^address/$', views.AddressView.as_view(), name='address'),
     url(r'^order/$', views.OrderView.as_view(), name='order'),
