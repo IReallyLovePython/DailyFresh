@@ -81,7 +81,7 @@ class PlaceOrdereView(View):
         return render(request, 'place_order.html', context)
 
 
-class CommitOrdereView(View):
+class CommitOrderView(View):
     def post(self,request):
         # todo:订单确认
         pass

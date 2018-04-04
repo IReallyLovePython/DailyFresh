@@ -24,10 +24,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '5ok(t@693i+^zucgv(bk5=pgycrrmo%=6t!e_oj5bg8wht&7@_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = False
+# DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -175,3 +175,5 @@ LOGIN_URL = '/users/login'
 
 # 配置Django自定义的存储系统
 DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.FdfsStorage'
+
+STATIC_ROOT = '/home/python/Desktop/static'
